@@ -2,6 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+import { Loader2 } from "lucide-react";
+import { redirect } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -19,10 +21,13 @@ import { Input } from "@/components/ui/input";
 import { Modal } from "@/components/ui/modal";
 import { useToast } from "@/components/ui/use-toast";
 import { useStoreModal } from "@/hooks/use-store-modal";
-import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
-    name: z.string().nonempty("Store name cannot be empty"),
+    name: z
+        .string({
+            required_error: "Store name is required",
+        })
+        .nonempty("Store name cannot be empty"),
 });
 
 export const StoreModal = () => {
@@ -46,6 +51,8 @@ export const StoreModal = () => {
                 });
                 storeModal.onClose();
             }
+
+            window.location.assign(`/${response.data.id}`);
         } catch (error) {
             toast({
                 title: "Something went wrong",
