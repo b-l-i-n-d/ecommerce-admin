@@ -2,10 +2,14 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Store } from "@prisma/client";
+import axios from "axios";
 import { Loader2, Trash } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
+import { set, useForm } from "react-hook-form";
 import * as z from "zod";
 
+import AlertModal from "@/components/modals/alert-modal";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -18,7 +22,7 @@ import {
 import { Heading } from "@/components/ui/heading";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
 
 interface SettingFormProps {
     initialData: Store;
@@ -35,6 +39,9 @@ const formSchema = z.object({
 type SettingFormValues = z.infer<typeof formSchema>;
 
 const SettingForm: React.FC<SettingFormProps> = ({ initialData }) => {
+    const params = useParams();
+    const router = useRouter();
+    const { toast } = useToast();
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -44,16 +51,47 @@ const SettingForm: React.FC<SettingFormProps> = ({ initialData }) => {
     });
 
     const onSubmit = async (values: SettingFormValues) => {
-        setIsLoading(true);
-
         try {
-            // await createStore(values);
+            setIsLoading(true);
+            await axios.patch(`/api/stores/${params.storeId}`, values);
+            router.refresh();
+            toast({
+                title: "Success",
+                description: "Store updated successfully.",
+            });
         } catch (error) {
-            console.error(error);
+            toast({
+                title: "Error",
+                description: "Something went wrong.",
+                variant: "destructive",
+            });
         } finally {
             setIsLoading(false);
         }
     };
+
+    const onDelete = async () => {
+        try {
+            setIsLoading(true);
+            await axios.delete(`/api/stores/${params.storeId}`);
+            router.refresh();
+            router.push("/");
+            toast({
+                title: "Success",
+                description: "Store deleted successfully.",
+            });
+        } catch (error) {
+            toast({
+                title: "Can't delete store",
+                description: "Make sure you don't have any products.",
+                variant: "destructive",
+            });
+        } finally {
+            setIsLoading(false);
+            setIsOpen(false);
+        }
+    };
+
     return (
         <>
             <div className="flex items-center justify-between">
@@ -102,11 +140,19 @@ const SettingForm: React.FC<SettingFormProps> = ({ initialData }) => {
                         disabled={isLoading}
                         className="ml-auto"
                     >
-                        {isLoading && <Loader2 className="mr-2 h-4 w-4" />}
+                        {isLoading && (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        )}
                         Save changes
                     </Button>
                 </form>
             </Form>
+            <AlertModal
+                isOpen={isOpen}
+                isLoading={isLoading}
+                onClose={() => setIsOpen(false)}
+                onConfirm={onDelete}
+            />
         </>
     );
 };
