@@ -6,10 +6,11 @@ import axios from "axios";
 import { Loader2, Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import AlertModal from "@/components/modals/alert-modal";
+import { ApiAlert } from "@/components/ui/api-alert";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -23,6 +24,7 @@ import { Heading } from "@/components/ui/heading";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
+import { useOrigin } from "@/hooks/use-origin";
 
 interface SettingFormProps {
     initialData: Store;
@@ -42,6 +44,8 @@ const SettingForm: React.FC<SettingFormProps> = ({ initialData }) => {
     const params = useParams();
     const router = useRouter();
     const { toast } = useToast();
+    const origin = useOrigin();
+
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -147,6 +151,15 @@ const SettingForm: React.FC<SettingFormProps> = ({ initialData }) => {
                     </Button>
                 </form>
             </Form>
+
+            <Separator className="my-4" />
+
+            <ApiAlert
+                title="NEXT_PUBLIC_API_URL"
+                description={`${origin}/api/stores/${params.storeId}`}
+                variant="public"
+            />
+
             <AlertModal
                 isOpen={isOpen}
                 isLoading={isLoading}
