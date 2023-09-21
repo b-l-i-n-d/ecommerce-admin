@@ -1,9 +1,10 @@
 "use client";
 
-import { Modal } from "@/components/ui/modal";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Button } from "../ui/button";
+
+import { Button } from "@/components/ui/button";
+import { Modal } from "@/components/ui/modal";
 
 interface AlertModalProps {
     isOpen: boolean;
@@ -12,7 +13,7 @@ interface AlertModalProps {
     isLoading: boolean;
 }
 
-const AlertModal: React.FC<AlertModalProps> = ({
+export const AlertModal: React.FC<AlertModalProps> = ({
     isOpen,
     onClose,
     onConfirm,
@@ -56,5 +57,3 @@ const AlertModal: React.FC<AlertModalProps> = ({
         </Modal>
     );
 };
-
-export default AlertModal;

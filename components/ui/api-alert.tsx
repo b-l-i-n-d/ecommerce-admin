@@ -1,9 +1,11 @@
+"use client";
+
 import { Copy, Server } from "lucide-react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge, BadgeProps } from "@/components/ui/badge";
-import { Button } from "./button";
-import { useToast } from "./use-toast";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 
 interface ApiAlertProps {
     title: string;
@@ -27,6 +29,7 @@ export const ApiAlert: React.FC<ApiAlertProps> = ({
     variant = "public",
 }) => {
     const { toast } = useToast();
+
     const onCopy = () => {
         navigator.clipboard.writeText(description);
         toast({

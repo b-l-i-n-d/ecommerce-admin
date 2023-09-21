@@ -9,7 +9,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import AlertModal from "@/components/modals/alert-modal";
+import { AlertModal } from "@/components/modals/alert-modal";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -109,14 +109,14 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
                 `/api/${params.storeId}/billboards/${params.billboardId}`
             );
             router.refresh();
-            router.push("/");
+            router.push(`/${params.storeId}/billboards`);
             toast({
                 title: toastTitle,
                 description: toastDescription,
             });
         } catch (error) {
             toast({
-                title: "Can't delete store",
+                title: "Can't delete billboard",
                 description: "Make sure you remove all categories.",
                 variant: "destructive",
             });
@@ -198,8 +198,6 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
                     </Button>
                 </form>
             </Form>
-
-            <Separator />
 
             <AlertModal
                 isOpen={isOpen}
