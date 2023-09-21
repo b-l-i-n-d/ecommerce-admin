@@ -40,7 +40,7 @@ const formSchema = z.object({
 
 type SettingFormValues = z.infer<typeof formSchema>;
 
-const SettingForm: React.FC<SettingFormProps> = ({ initialData }) => {
+export const SettingForm: React.FC<SettingFormProps> = ({ initialData }) => {
     const params = useParams();
     const router = useRouter();
     const { toast } = useToast();
@@ -104,16 +104,16 @@ const SettingForm: React.FC<SettingFormProps> = ({ initialData }) => {
                     description="Manage your store settings."
                 />
                 <Button
-                    size="icon"
                     variant="destructive"
                     onClick={() => setIsOpen(true)}
                     disabled={isLoading}
                 >
-                    <Trash className="h-4 w-4" />
+                    <Trash className="h-4 w-4 mr-2" />
+                    Delete Store
                 </Button>
             </div>
 
-            <Separator className="my-4" />
+            <Separator />
 
             <Form {...form}>
                 <form
@@ -169,5 +169,3 @@ const SettingForm: React.FC<SettingFormProps> = ({ initialData }) => {
         </>
     );
 };
-
-export default SettingForm;
