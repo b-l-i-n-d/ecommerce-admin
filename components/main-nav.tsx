@@ -20,7 +20,16 @@ export const MainNav = ({
         {
             href: `/${params.storeId}/billboards`,
             label: "Billboards",
-            active: pathname === `/${params.storeId}/billboards`,
+            active:
+                pathname === `/${params.storeId}/billboards` ||
+                pathname.match(/\/billboards\/.*/),
+        },
+        {
+            href: `/${params.storeId}/categories`,
+            label: "Categories",
+            active:
+                pathname === `/${params.storeId}/categories` ||
+                pathname.match(/\/categories\/.*/),
         },
         {
             href: `/${params.storeId}/settings`,
@@ -38,7 +47,7 @@ export const MainNav = ({
                     className={cn(
                         "text-sm font-medium transition-colors hover:text-primary",
                         route.active
-                            ? "text-black dark:text-white"
+                            ? "text-black dark:text-white font-bold"
                             : "text-muted-foreground"
                     )}
                 >
