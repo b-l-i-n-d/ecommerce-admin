@@ -17,10 +17,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
 
-import { CategoryColumn } from "./columns";
+import { SizeColumn } from "./columns";
 
 interface CellActionProps {
-    data: CategoryColumn;
+    data: SizeColumn;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -35,22 +35,22 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         navigator.clipboard.writeText(id);
         toast({
             title: "Copied",
-            description: "Category ID copied to clipboard.",
+            description: "Sizes ID copied to clipboard.",
         });
     };
 
     const onDelete = async () => {
         try {
             setIsLoading(true);
-            await axios.delete(`/api/${params.storeId}/categories/${data.id}`);
+            await axios.delete(`/api/${params.storeId}/sizes/${data.id}`);
             router.refresh();
             toast({
-                title: "Category deleted",
-                description: "Category deleted successfully.",
+                title: "Size deleted",
+                description: "Size deleted successfully.",
             });
         } catch (error) {
             toast({
-                title: "Can't delete category",
+                title: "Can't delete size",
                 description: "Make sure you remove all products.",
                 variant: "destructive",
             });
@@ -78,9 +78,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                     </DropdownMenuItem>
                     <DropdownMenuItem
                         onClick={() =>
-                            router.push(
-                                `/${params.storeId}/categories/${data.id}`
-                            )
+                            router.push(`/${params.storeId}/sizes/${data.id}`)
                         }
                     >
                         <Edit className="w-4 h-4 mr-2" />
