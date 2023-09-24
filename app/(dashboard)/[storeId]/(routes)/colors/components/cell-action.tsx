@@ -17,10 +17,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
 
-import { CategoryColumn } from "./columns";
+import { ColorColumn } from "./columns";
 
 interface CellActionProps {
-    data: CategoryColumn;
+    data: ColorColumn;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -35,24 +35,23 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         navigator.clipboard.writeText(id);
         toast({
             title: "Copied",
-            description: "Category ID copied to clipboard.",
+            description: "Color ID copied to clipboard.",
         });
     };
 
     const onDelete = async () => {
         try {
             setIsLoading(true);
-            await axios.delete(`/api/${params.storeId}/categories/${data.id}`);
+            await axios.delete(`/api/${params.storeId}/colors/${data.id}`);
             router.refresh();
             toast({
-                title: "Category deleted",
-                description: "Category deleted successfully.",
+                title: "Color deleted",
+                description: "Color deleted successfully.",
             });
         } catch (error) {
             toast({
-                title: "Can't delete category",
-                description:
-                    "Make sure you remove all products using this size.",
+                title: "Can't delete color",
+                description: "Make sure you remove all products using this color.",
                 variant: "destructive",
             });
         } finally {
@@ -79,9 +78,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                     </DropdownMenuItem>
                     <DropdownMenuItem
                         onClick={() =>
-                            router.push(
-                                `/${params.storeId}/categories/${data.id}`
-                            )
+                            router.push(`/${params.storeId}/colors/${data.id}`)
                         }
                     >
                         <Edit className="w-4 h-4 mr-2" />

@@ -4,7 +4,6 @@ import prismadb from "@/lib/prismadb";
 
 import { SizeClient } from "./components/client";
 import { SizeColumn } from "./components/columns";
-import { useParams } from "next/navigation";
 
 const SizesPage = async ({
     params,

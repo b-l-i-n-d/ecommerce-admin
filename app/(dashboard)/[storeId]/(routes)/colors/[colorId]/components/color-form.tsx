@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Size } from "@prisma/client";
+import { Color } from "@prisma/client";
 import axios from "axios";
 import { Loader2, Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
@@ -24,8 +24,8 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 
-interface SizeFormProps {
-    initialData: Size | null;
+interface ColorFormProps {
+    initialData: Color | null;
 }
 
 const formSchema = z.object({
@@ -38,12 +38,13 @@ const formSchema = z.object({
         .string({
             required_error: "Value is required.",
         })
-        .nonempty("Value can not be empty."),
+        .nonempty("Value can not be empty.")
+        .regex(/^#([0-9a-f]{3}){1,2}$/i, "Value must be a valid hex color."),
 });
 
-type SizeFormValues = z.infer<typeof formSchema>;
+type ColorFormValues = z.infer<typeof formSchema>;
 
-export const SizeForm: React.FC<SizeFormProps> = ({ initialData }) => {
+export const ColorForm: React.FC<ColorFormProps> = ({ initialData }) => {
     const params = useParams();
     const router = useRouter();
     const { toast } = useToast();
@@ -51,19 +52,19 @@ export const SizeForm: React.FC<SizeFormProps> = ({ initialData }) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const title = initialData ? "Edit size" : "Create size";
-    const description = initialData ? "Edit a size" : "Add a size";
-    const toastTitle = initialData ? "Size updated" : "Size created";
+    const title = initialData ? "Edit color" : "Create color";
+    const description = initialData ? "Edit a color" : "Add a color";
+    const toastTitle = initialData ? "Color updated" : "Color created";
     const toastDescription = initialData
-        ? "Size updated successfully."
-        : "Size created successfully.";
+        ? "Color updated successfully."
+        : "Color created successfully.";
     const toastErrorTitle = initialData
-        ? "Can't update size"
-        : "Can't create size";
+        ? "Can't update color"
+        : "Can't create color";
     const toastErrorDescription = "Something went wrong.";
     const action = initialData ? "Save changes" : "Create";
 
-    const form = useForm<SizeFormValues>({
+    const form = useForm<ColorFormValues>({
         defaultValues: initialData || {
             name: "",
             value: "",
@@ -71,19 +72,19 @@ export const SizeForm: React.FC<SizeFormProps> = ({ initialData }) => {
         resolver: zodResolver(formSchema),
     });
 
-    const onSubmit = async (values: SizeFormValues) => {
+    const onSubmit = async (values: ColorFormValues) => {
         try {
             setIsLoading(true);
             if (initialData) {
                 await axios.patch(
-                    `/api/${params.storeId}/sizes/${params.sizeId}`,
+                    `/api/${params.storeId}/colors/${params.colorId}`,
                     values
                 );
             } else {
-                await axios.post(`/api/${params.storeId}/sizes`, values);
+                await axios.post(`/api/${params.storeId}/colors`, values);
             }
             router.refresh();
-            router.push(`/${params.storeId}/sizes`);
+            router.push(`/${params.storeId}/colors`);
             toast({
                 title: toastTitle,
                 description: toastDescription,
@@ -102,18 +103,20 @@ export const SizeForm: React.FC<SizeFormProps> = ({ initialData }) => {
     const onDelete = async () => {
         try {
             setIsLoading(true);
-            await axios.delete(`/api/${params.storeId}/sizes/${params.sizeId}`);
+            await axios.delete(
+                `/api/${params.storeId}/colors/${params.colorId}`
+            );
             router.refresh();
-            router.push(`/${params.storeId}/sizes`);
+            router.push(`/${params.storeId}/colors`);
             toast({
-                title: "Size deleted",
-                description: "Size deleted successfully.",
+                title: "Color deleted",
+                description: "Color deleted successfully.",
             });
         } catch (error) {
             toast({
-                title: "Can't delete size",
+                title: "Can't delete color",
                 description:
-                    "Make sure you remove all products using this size.",
+                    "Make sure you remove all products using this color.",
                 variant: "destructive",
             });
         } finally {
@@ -155,7 +158,7 @@ export const SizeForm: React.FC<SizeFormProps> = ({ initialData }) => {
                                     <FormControl>
                                         <Input
                                             disabled={isLoading}
-                                            placeholder="Size name"
+                                            placeholder="Color name"
                                             {...field}
                                         />
                                     </FormControl>
@@ -171,11 +174,20 @@ export const SizeForm: React.FC<SizeFormProps> = ({ initialData }) => {
                                 <FormItem>
                                     <FormLabel>Value</FormLabel>
                                     <FormControl>
-                                        <Input
-                                            disabled={isLoading}
-                                            placeholder="Size value"
-                                            {...field}
-                                        />
+                                        <div className="flex items-center gap-x-4">
+                                            <Input
+                                                disabled={isLoading}
+                                                placeholder="Color value"
+                                                {...field}
+                                            />
+                                            <div
+                                                className="p-4 rounded-full border"
+                                                style={{
+                                                    backgroundColor:
+                                                        field.value,
+                                                }}
+                                            />
+                                        </div>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
