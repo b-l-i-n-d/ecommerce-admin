@@ -46,6 +46,13 @@ export const MainNav = ({
                 pathname.match(/\/colors\/.*/),
         },
         {
+            href: `/${params.storeId}/products`,
+            label: "Products",
+            active:
+                pathname === `/${params.storeId}/products` ||
+                pathname.match(/\/products\/.*/),
+        },
+        {
             href: `/${params.storeId}/settings`,
             label: "Settings",
             active: pathname === `/${params.storeId}/settings`,
