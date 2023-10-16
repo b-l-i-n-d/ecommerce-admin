@@ -1,7 +1,18 @@
 "use client";
 
+import { cn } from "@/lib/utils";
+import { useTheme } from "next-themes";
 import { HashLoader } from "react-spinners";
 
 export const Loader = () => {
-    return <HashLoader className="text-foreground" size={50} />;
+    const { theme } = useTheme();
+
+    return (
+        <HashLoader
+            color={
+                theme === "system" ? "gray" : theme === "dark" ? "#fff" : "#000"
+            }
+            size={50}
+        />
+    );
 };
