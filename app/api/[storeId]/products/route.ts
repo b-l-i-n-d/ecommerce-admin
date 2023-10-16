@@ -71,6 +71,7 @@ export async function POST(
             categoryId,
             sizeId,
             colorId,
+            stock,
             isFeatured,
             isArchived,
         } = body;
@@ -109,6 +110,16 @@ export async function POST(
             return new NextResponse("Color is required", { status: 400 });
         }
 
+        if (!stock) {
+            return new NextResponse("Stock is required", { status: 400 });
+        }
+
+        if (stock < 1) {
+            return new NextResponse("Stock must be greater than 1", {
+                status: 400,
+            });
+        }
+
         if (!params.storeId) {
             return new NextResponse("Store id is required", { status: 400 });
         }
@@ -138,6 +149,7 @@ export async function POST(
                 categoryId,
                 sizeId,
                 colorId,
+                stock,
                 isFeatured,
                 isArchived,
                 storeId: params.storeId,

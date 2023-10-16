@@ -5,10 +5,10 @@ import prismadb from "@/lib/prismadb";
 
 export async function GET(
     req: Request,
-    { params }: { params: { ptoductId: string } }
+    { params }: { params: { productId: string } }
 ) {
     try {
-        if (!params.ptoductId) {
+        if (!params.productId) {
             return new NextResponse("Product ID is required", {
                 status: 400,
             });
@@ -16,7 +16,7 @@ export async function GET(
 
         const product = await prismadb.product.findUnique({
             where: {
-                id: params.ptoductId,
+                id: params.productId,
             },
             include: {
                 images: true,
@@ -48,6 +48,7 @@ export async function PATCH(
             categoryId,
             sizeId,
             colorId,
+            stock,
             isFeatured,
             isArchived,
         } = body;
@@ -86,6 +87,16 @@ export async function PATCH(
             return new NextResponse("Color is required", { status: 400 });
         }
 
+        if (!stock) {
+            return new NextResponse("Stock is required", { status: 400 });
+        }
+
+        if (stock < 0) {
+            return new NextResponse("Stock must be greater than 0", {
+                status: 400,
+            });
+        }
+
         if (!params.productId) {
             return new NextResponse("Product ID is required", {
                 status: 400,
@@ -116,6 +127,7 @@ export async function PATCH(
                 categoryId,
                 sizeId,
                 colorId,
+                stock,
                 isFeatured,
                 isArchived,
             },

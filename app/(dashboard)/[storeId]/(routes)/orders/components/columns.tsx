@@ -1,5 +1,6 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { ColumnDef } from "@tanstack/react-table";
 
 export type OrderColumn = {
@@ -18,6 +19,10 @@ export const columns: ColumnDef<OrderColumn>[] = [
         header: "Products",
     },
     {
+        accessorKey: "name",
+        header: "Name",
+    },
+    {
         accessorKey: "phone",
         header: "Phone",
     },
@@ -32,6 +37,11 @@ export const columns: ColumnDef<OrderColumn>[] = [
     {
         accessorKey: "isPaid",
         header: "Paid",
+        cell: ({ row }) => (
+            <Badge variant={row.original.isPaid ? "default" : "destructive"}>
+                {row.original.isPaid ? "Yes" : "No"}
+            </Badge>
+        ),
     },
     {
         accessorKey: "createdAt",

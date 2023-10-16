@@ -24,8 +24,6 @@ import {
 import { Heading } from "@/components/ui/heading";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/components/ui/use-toast";
 import {
     Select,
     SelectContent,
@@ -33,6 +31,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/components/ui/use-toast";
 
 interface ProductFormProps {
     initialData:
@@ -76,6 +76,11 @@ const formSchema = z.object({
             required_error: "Color Id is required.",
         })
         .nonempty("Color can not be empty."),
+    stock: z.coerce
+        .number({
+            required_error: "Stock is required.",
+        })
+        .min(1, "Stock can not be less than 1."),
     isFeatured: z.boolean().default(false).optional(),
     isArchived: z.boolean().default(false).optional(),
 });
@@ -120,6 +125,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                   categoryId: "",
                   sizeId: "",
                   colorId: "",
+                  stock: 1,
                   isFeatured: false,
                   isArchived: false,
               },
@@ -354,6 +360,24 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                                             ))}
                                         </SelectContent>
                                     </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="stock"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Stock</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="number"
+                                            disabled={isLoading}
+                                            placeholder="Product stock"
+                                            {...field}
+                                        />
+                                    </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
