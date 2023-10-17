@@ -6,7 +6,6 @@ import {
     MoveUpRight,
     Package,
 } from "lucide-react";
-import { NextPage } from "next";
 
 import { Badge } from "@/components/ui/badge";
 import {
@@ -44,13 +43,13 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-interface DashboardPageProps {
+const DashboardPage = async ({
+    params,
+}: {
     params: {
         storeId: string;
     };
-}
-
-const DashboardPage: NextPage<DashboardPageProps> = async ({ params }) => {
+}) => {
     const store = await prismadb.store.findFirst({
         where: {
             id: params.storeId,
