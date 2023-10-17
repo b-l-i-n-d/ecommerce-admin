@@ -1,9 +1,15 @@
 import { format } from "date-fns";
+import { Metadata } from "next";
 
 import prismadb from "@/lib/prismadb";
 
 import { SizeClient } from "./components/client";
 import { SizeColumn } from "./components/columns";
+
+export const metadata: Metadata = {
+    title: "Sizes",
+    description: "View sizes for your store.",
+};
 
 const SizesPage = async ({
     params,

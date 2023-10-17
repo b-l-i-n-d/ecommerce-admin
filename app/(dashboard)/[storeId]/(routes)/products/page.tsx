@@ -5,6 +5,12 @@ import { formatter } from "@/lib/utils";
 
 import { BillboardClient } from "./components/client";
 import { ProductColumn } from "./components/columns";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Products",
+    description: "View products for your store.",
+};
 
 const ProductsPage = async ({
     params,

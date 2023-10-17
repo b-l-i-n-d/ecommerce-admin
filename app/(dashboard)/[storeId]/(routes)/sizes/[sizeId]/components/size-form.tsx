@@ -3,7 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Size } from "@prisma/client";
 import axios from "axios";
-import { Loader2, Trash } from "lucide-react";
+import { ArrowLeftCircle, Loader2, Trash } from "lucide-react";
+import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -125,7 +126,14 @@ export const SizeForm: React.FC<SizeFormProps> = ({ initialData }) => {
     return (
         <>
             <div className="flex items-center justify-between">
-                <Heading title={title} description={description} />
+                <div className="flex items-center gap-6">
+                    <Link href={`/${params.storeId}/sizes`}>
+                        <Button variant="ghost" size="icon">
+                            <ArrowLeftCircle className="h-8 w-8" />
+                        </Button>
+                    </Link>
+                    <Heading title={title} description={description} />
+                </div>
                 {initialData && (
                     <Button
                         variant="destructive"

@@ -2,6 +2,24 @@ import prismadb from "@/lib/prismadb";
 
 import { CategoryForm } from "./components/category-form";
 
+export async function generateMetadata({
+    params,
+}: {
+    params: { categoryId: string; storeId: string };
+}) {
+    if (params.categoryId === "new") {
+        return {
+            title: "Add Category",
+            description: "Create a new category for your store.",
+        };
+    } else {
+        return {
+            title: "Edit Category",
+            description: `Edit category for your store.`,
+        };
+    }
+}
+
 const CategoryPage = async ({
     params,
 }: {

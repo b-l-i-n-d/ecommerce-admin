@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Color } from "@prisma/client";
 import axios from "axios";
-import { Loader2, Trash } from "lucide-react";
+import { ArrowLeftCircle, Loader2, Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -23,6 +23,7 @@ import { Heading } from "@/components/ui/heading";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
+import Link from "next/link";
 
 interface ColorFormProps {
     initialData: Color | null;
@@ -128,7 +129,14 @@ export const ColorForm: React.FC<ColorFormProps> = ({ initialData }) => {
     return (
         <>
             <div className="flex items-center justify-between">
-                <Heading title={title} description={description} />
+                <div className="flex items-center gap-6">
+                    <Link href={`/${params.storeId}/colors`}>
+                        <Button variant="ghost" size="icon">
+                            <ArrowLeftCircle className="h-8 w-8" />
+                        </Button>
+                    </Link>
+                    <Heading title={title} description={description} />
+                </div>
                 {initialData && (
                     <Button
                         variant="destructive"

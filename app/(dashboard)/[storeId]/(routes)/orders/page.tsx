@@ -1,10 +1,16 @@
 import { format } from "date-fns";
+import { Metadata } from "next";
 
 import prismadb from "@/lib/prismadb";
 import { formatter } from "@/lib/utils";
 
 import { OrderClient } from "./components/client";
 import { OrderColumn } from "./components/columns";
+
+export const metadata: Metadata = {
+    title: "Orders",
+    description: "View orders for your store.",
+};
 
 const OrdersPage = async ({
     params,

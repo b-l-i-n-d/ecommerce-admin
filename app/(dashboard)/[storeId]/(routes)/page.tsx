@@ -6,8 +6,13 @@ import {
     MoveUpRight,
     Package,
 } from "lucide-react";
+import { Metadata } from "next";
+import Link from "next/link";
 
+import { Overview } from "@/components/overview";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
@@ -38,10 +43,11 @@ import {
     getTotalPoductsInStock,
     getTypesOfProducts,
 } from "@/actions/get-stock-data";
-import { Overview } from "@/components/overview";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+
+export const metadata: Metadata = {
+    title: "Dashboard",
+    description: "Dashboard page for your store",
+};
 
 const DashboardPage = async ({
     params,

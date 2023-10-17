@@ -1,5 +1,5 @@
 import { auth } from "@clerk/nextjs";
-import { NextPage } from "next";
+import { Metadata, NextPage } from "next";
 import { redirect } from "next/navigation";
 
 import prismadb from "@/lib/prismadb";
@@ -10,6 +10,11 @@ interface SettingsPageProps {
         storeId: string;
     };
 }
+
+export const metadata: Metadata = {
+    title: "Settings",
+    description: "Settings for your store.",
+};
 
 const SettingsPage: NextPage<SettingsPageProps> = async ({ params }) => {
     const { userId } = auth();

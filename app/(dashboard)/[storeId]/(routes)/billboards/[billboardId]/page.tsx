@@ -2,6 +2,24 @@ import prismadb from "@/lib/prismadb";
 
 import { BillboardForm } from "./components/billboard-form";
 
+export async function generateMetadata({
+    params,
+}: {
+    params: { billboardId: string };
+}) {
+    if (params.billboardId === "new") {
+        return {
+            title: "Add Billboard",
+            description: "Create a new billboard for your store.",
+        };
+    } else {
+        return {
+            title: "Edit Billboard",
+            description: `Edit billboard for your store.`,
+        };
+    }
+}
+
 const BillboardPage = async ({
     params,
 }: {

@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Billboard, Category } from "@prisma/client";
 import axios from "axios";
-import { Loader2, Trash } from "lucide-react";
+import { ArrowLeftCircle, Loader2, Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
+import Link from "next/link";
 
 interface CategoryFormProps {
     initialData: Category | null;
@@ -137,7 +138,14 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
     return (
         <>
             <div className="flex items-center justify-between">
-                <Heading title={title} description={description} />
+                <div className="flex items-center gap-6">
+                    <Link href={`/${params.storeId}/categories`}>
+                        <Button variant="ghost" size="icon">
+                            <ArrowLeftCircle className="h-8 w-8" />
+                        </Button>
+                    </Link>
+                    <Heading title={title} description={description} />
+                </div>
                 {initialData && (
                     <Button
                         variant="destructive"

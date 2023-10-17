@@ -1,9 +1,15 @@
 import { format } from "date-fns";
+import { Metadata } from "next";
 
 import prismadb from "@/lib/prismadb";
 
 import { CategoryClient } from "./components/client";
 import { CategoryColumn } from "./components/columns";
+
+export const metadata: Metadata = {
+    title: "Categories",
+    description: "Manage categories for your store.",
+};
 
 const CategoriesPage = async ({
     params,

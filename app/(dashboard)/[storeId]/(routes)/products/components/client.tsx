@@ -9,6 +9,7 @@ import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 
 import { ApiList } from "@/components/ui/api-list";
+import Link from "next/link";
 import { ProductColumn, columns } from "./columns";
 
 interface ProductClientProps {
@@ -17,7 +18,6 @@ interface ProductClientProps {
 
 export const BillboardClient: React.FC<ProductClientProps> = ({ data }) => {
     const params = useParams();
-    const router = useRouter();
 
     return (
         <>
@@ -26,14 +26,12 @@ export const BillboardClient: React.FC<ProductClientProps> = ({ data }) => {
                     title={`Products (${data.length})`}
                     description="Manage products for your store."
                 />
-                <Button
-                    onClick={() =>
-                        router.push(`/${params.storeId}/products/new`)
-                    }
-                >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add New
-                </Button>
+                <Link href={`/${params.storeId}/products/new`}>
+                    <Button>
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add New
+                    </Button>
+                </Link>
             </div>
 
             <Separator />

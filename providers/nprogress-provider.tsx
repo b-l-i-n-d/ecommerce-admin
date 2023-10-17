@@ -1,10 +1,8 @@
 "use client";
 
 import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
-import { useTheme } from "next-themes";
 
 const NProgressProviders = ({ children }: { children: React.ReactNode }) => {
-    const { theme } = useTheme();
     return (
         <>
             {children}

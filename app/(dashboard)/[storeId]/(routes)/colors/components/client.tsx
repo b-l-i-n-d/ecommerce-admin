@@ -1,7 +1,7 @@
 "use client";
 
 import { Plus } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
@@ -9,6 +9,7 @@ import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 
 import { ApiList } from "@/components/ui/api-list";
+import Link from "next/link";
 import { ColorColumn, columns } from "./columns";
 
 interface ColorClientProps {
@@ -17,7 +18,6 @@ interface ColorClientProps {
 
 export const ColorClient: React.FC<ColorClientProps> = ({ data }) => {
     const params = useParams();
-    const router = useRouter();
 
     return (
         <>
@@ -26,12 +26,12 @@ export const ColorClient: React.FC<ColorClientProps> = ({ data }) => {
                     title={`Colors (${data.length})`}
                     description="Manage colors for your store."
                 />
-                <Button
-                    onClick={() => router.push(`/${params.storeId}/colors/new`)}
-                >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add New
-                </Button>
+                <Link href={`/${params.storeId}/colors/new`}>
+                    <Button>
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add New
+                    </Button>
+                </Link>
             </div>
 
             <Separator />

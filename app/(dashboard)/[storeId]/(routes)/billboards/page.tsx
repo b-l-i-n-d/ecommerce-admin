@@ -1,9 +1,15 @@
 import { format } from "date-fns";
+import { Metadata } from "next";
 
 import prismadb from "@/lib/prismadb";
 
 import { BillboardClient } from "./components/client";
 import { BillboardColumn } from "./components/columns";
+
+export const metadata: Metadata = {
+    title: "Billboards",
+    description: "Manage billboards for your store.",
+};
 
 const BillboardsPage = async ({
     params,

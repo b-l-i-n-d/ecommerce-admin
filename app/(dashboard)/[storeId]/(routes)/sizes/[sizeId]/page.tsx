@@ -2,6 +2,24 @@ import prismadb from "@/lib/prismadb";
 
 import { SizeForm } from "./components/size-form";
 
+export async function generateMetadata({
+    params,
+}: {
+    params: { sizeId: string };
+}) {
+    if (params.sizeId !== "new") {
+        return {
+            title: "Edit Size",
+            description: "Edit a size for your store.",
+        };
+    } else {
+        return {
+            title: "Add Size",
+            description: "Add a size for your store.",
+        };
+    }
+}
+
 const SizePage = async ({ params }: { params: { sizeId: string } }) => {
     const size = await prismadb.size.findUnique({
         where: { id: params.sizeId },

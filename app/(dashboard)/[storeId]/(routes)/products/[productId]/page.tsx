@@ -2,6 +2,24 @@ import prismadb from "@/lib/prismadb";
 
 import { ProductForm } from "./components/product-form";
 
+export async function generateMetadata({
+    params,
+}: {
+    params: { productId: string };
+}) {
+    if (params.productId !== "new") {
+        return {
+            title: "Edit Product",
+            description: "Edit a product for your store.",
+        };
+    } else {
+        return {
+            title: "Add Product",
+            description: "Add a product for your store.",
+        };
+    }
+}
+
 const BillboardPage = async ({
     params,
 }: {
