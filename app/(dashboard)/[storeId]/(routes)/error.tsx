@@ -17,7 +17,7 @@ export default function Error({
     }, [error]);
 
     return (
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center h-full w-full">
             <Heading title="Something went wrong" />
             <Button
                 onClick={
