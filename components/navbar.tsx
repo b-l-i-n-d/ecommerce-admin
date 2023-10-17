@@ -27,7 +27,7 @@ export const Navbar = async () => {
                 <MainNav className="mx-6" />
                 <div className="ml-auto flex items-center gap-4">
                     <ModeToggle />
-                    <UserButton />
+                    <UserButton afterSignOutUrl="/" />
                 </div>
             </div>
         </div>
