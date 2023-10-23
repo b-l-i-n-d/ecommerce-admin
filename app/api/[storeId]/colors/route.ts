@@ -78,7 +78,7 @@ export async function POST(
         const color = await prismadb.color.create({
             data: {
                 name,
-                value,
+                value: value.toUpperCase(),
                 storeId: params.storeId,
             },
         });

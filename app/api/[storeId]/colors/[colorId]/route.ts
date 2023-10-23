@@ -74,7 +74,7 @@ export async function PATCH(
             },
             data: {
                 name,
-                value,
+                value: value.toUpperCase(),
             },
         });
 

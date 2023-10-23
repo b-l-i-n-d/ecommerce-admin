@@ -53,15 +53,11 @@ export async function POST(req: Request) {
                 orderItems: {
                     include: {
                         product: true,
+                        size: true,
                     },
                 },
             },
         });
-
-        // const productIds = order.orderItems.map((item) => item.product.id);
-        // const productStocks = order.orderItems.map(
-        //     (item) => item.product.stock
-        // );
 
         await prismadb.$transaction([
             ...order.orderItems.map((item) =>
@@ -70,7 +66,18 @@ export async function POST(req: Request) {
                         id: item.product.id,
                     },
                     data: {
-                        stock: item.product.stock - item.quantity,
+                        sizes: {
+                            update: {
+                                where: {
+                                    id: item.size.id,
+                                },
+                                data: {
+                                    stock: {
+                                        decrement: item.quantity,
+                                    },
+                                },
+                            },
+                        },
                     },
                 })
             ),

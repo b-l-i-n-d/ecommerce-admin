@@ -12,7 +12,10 @@ export type ProductColumn = {
     price: string;
     category: string;
     sizes: number;
-    color: string;
+    color: {
+        name: string;
+        value: string;
+    };
     createdAt: string;
 };
 
@@ -58,11 +61,11 @@ export const columns: ColumnDef<ProductColumn>[] = [
         header: "Color",
         cell: ({ row }) => (
             <div className="flex items-center gap-x-2">
-                {row.original.color}
                 <div
                     className="w-6 h-6 rounded-full border"
-                    style={{ backgroundColor: row.original.color }}
+                    style={{ backgroundColor: row.original.color.value }}
                 />
+                {row.original.color.name}
             </div>
         ),
     },

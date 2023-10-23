@@ -42,7 +42,10 @@ const ProductsPage = async ({
             price: formatter.format(product.price.toNumber()),
             category: product.category.name,
             sizes: product.sizes.length,
-            color: product.color.value,
+            color: {
+                name: product.color.name,
+                value: product.color.value,
+            },
             createdAt: format(product.createdAt, "do MMMM, yyyy"),
         };
     });

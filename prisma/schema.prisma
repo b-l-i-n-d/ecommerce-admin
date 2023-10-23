@@ -54,6 +54,7 @@ model Size {
     id        String      @id @default(uuid())
     storeId   String
     store     Store       @relation("StoreToSize", fields: [storeId], references: [id])
+    orders    OrderItem[] @relation("SizeToOrder")
     name      String
     value     String
     sizetocks SizeStock[] @relation("SizeToSizeStock")
@@ -131,12 +132,15 @@ model OrderItem {
     order     Order    @relation("OrderItemToOrder", fields: [orderId], references: [id])
     productId String
     product   Product  @relation("ProductToOrder", fields: [productId], references: [id])
+    sizeId    String
+    size      Size     @relation("SizeToOrder", fields: [sizeId], references: [id])
     quantity  Int
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
     @@index([orderId])
     @@index([productId])
+    @@index([sizeId])
 }
 
 model SizeStock {

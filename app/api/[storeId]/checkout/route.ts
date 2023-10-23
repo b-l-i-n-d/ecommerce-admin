@@ -68,6 +68,11 @@ export async function POST(
                             id: item.id,
                         },
                     },
+                    size: {
+                        connect: {
+                            id: item.sizeId,
+                        },
+                    },
                     quantity: item.quantity,
                 })),
             },
