@@ -21,7 +21,7 @@ export async function GET(
             include: {
                 images: true,
                 category: true,
-                size: true,
+                sizes: true,
                 color: true,
             },
         });
@@ -46,9 +46,8 @@ export async function PATCH(
             images,
             price,
             categoryId,
-            sizeId,
+            sizes,
             colorId,
-            stock,
             isFeatured,
             isArchived,
         } = body;
@@ -79,22 +78,27 @@ export async function PATCH(
             return new NextResponse("Category is required", { status: 400 });
         }
 
-        if (!sizeId) {
+        if (!sizes || !sizes.length) {
             return new NextResponse("Size is required", { status: 400 });
+        }
+
+        if (
+            !sizes.every(
+                (size: { sizeId: string; stock: number }) =>
+                    size.sizeId && size.stock
+            )
+        ) {
+            return new NextResponse("Size is required", { status: 400 });
+        }
+
+        if (!sizes.every((size: { stock: number }) => size.stock >= 0)) {
+            return new NextResponse("Stock can not be less than 0", {
+                status: 400,
+            });
         }
 
         if (!colorId) {
             return new NextResponse("Color is required", { status: 400 });
-        }
-
-        if (!stock) {
-            return new NextResponse("Stock is required", { status: 400 });
-        }
-
-        if (stock < 0) {
-            return new NextResponse("Stock must be greater than 0", {
-                status: 400,
-            });
         }
 
         if (!params.productId) {
@@ -125,9 +129,10 @@ export async function PATCH(
                 },
                 price,
                 categoryId,
-                sizeId,
                 colorId,
-                stock,
+                sizes: {
+                    deleteMany: {},
+                },
                 isFeatured,
                 isArchived,
             },
@@ -142,6 +147,16 @@ export async function PATCH(
                     createMany: {
                         data: [
                             ...images.map((image: { url: string }) => image),
+                        ],
+                    },
+                },
+                sizes: {
+                    createMany: {
+                        data: [
+                            ...sizes.map(
+                                (size: { sizeId: string; stock: number }) =>
+                                    size
+                            ),
                         ],
                     },
                 },

@@ -20,7 +20,7 @@ export async function generateMetadata({
     }
 }
 
-const BillboardPage = async ({
+const ProductPage = async ({
     params,
 }: {
     params: { productId: string; storeId: string };
@@ -29,6 +29,7 @@ const BillboardPage = async ({
         where: { id: params.productId },
         include: {
             images: true,
+            sizes: true,
         },
     });
 
@@ -64,4 +65,4 @@ const BillboardPage = async ({
     );
 };
 
-export default BillboardPage;
+export default ProductPage;

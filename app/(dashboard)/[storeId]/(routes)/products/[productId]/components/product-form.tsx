@@ -1,12 +1,20 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Category, Color, Image, Product, Size } from "@prisma/client";
+import {
+    Category,
+    Color,
+    Image,
+    Product,
+    Size,
+    SizeStock,
+} from "@prisma/client";
 import axios from "axios";
-import { ArrowLeftCircle, Loader2, Trash } from "lucide-react";
+import { ArrowLeftCircle, Loader2, Plus, Trash } from "lucide-react";
+import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { AlertModal } from "@/components/modals/alert-modal";
@@ -33,12 +41,12 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
-import Link from "next/link";
 
 interface ProductFormProps {
     initialData:
         | (Product & {
               images: Image[];
+              sizes: SizeStock[];
           })
         | null;
     categories: Category[];
@@ -67,21 +75,25 @@ const formSchema = z.object({
             required_error: "Category Id is required.",
         })
         .nonempty("Category can not be empty."),
-    sizeId: z
-        .string({
-            required_error: "Size Id is required.",
+    sizes: z
+        .object({
+            sizeId: z
+                .string({
+                    required_error: "Size is required.",
+                })
+                .nonempty("Size can not be empty."),
+            stock: z.coerce
+                .number({
+                    required_error: "Stock is required.",
+                })
+                .min(1, "Stock can not be less than 1."),
         })
-        .nonempty("Size can not be empty."),
+        .array(),
     colorId: z
         .string({
             required_error: "Color Id is required.",
         })
         .nonempty("Color can not be empty."),
-    stock: z.coerce
-        .number({
-            required_error: "Stock is required.",
-        })
-        .min(1, "Stock can not be less than 1."),
     isFeatured: z.boolean().default(false).optional(),
     isArchived: z.boolean().default(false).optional(),
 });
@@ -124,18 +136,62 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                   images: [],
                   price: 0,
                   categoryId: "",
-                  sizeId: "",
+                  sizes: [
+                      {
+                          sizeId: "",
+                          stock: 1,
+                      },
+                  ],
                   colorId: "",
-                  stock: 1,
                   isFeatured: false,
                   isArchived: false,
               },
         resolver: zodResolver(formSchema),
+        mode: "onChange",
+    });
+
+    const formFieldArray = useFieldArray({
+        control: form.control,
+        name: "sizes",
+        rules: {
+            required: "Sizes is required.",
+            validate: (sizes: ProductFormValues["sizes"]) => {
+                if (sizes.length === 0) {
+                    return "Sizes can not be empty.";
+                }
+                if (sizes.some((size) => size.sizeId === "")) {
+                    return "Sizes can not be empty.";
+                }
+                if (sizes.some((size) => size.stock < 1)) {
+                    return "Stock can not be less than 1.";
+                }
+                return true;
+            },
+        },
     });
 
     const onSubmit = async (values: ProductFormValues) => {
         try {
             setIsLoading(true);
+
+            const isDuplicateSizes = values.sizes.some(
+                (size) =>
+                    values.sizes.filter((s) => s.sizeId === size.sizeId)
+                        .length > 1
+            );
+
+            if (isDuplicateSizes) {
+                toast({
+                    title: "Size duplicated",
+                    description: "Sizes can not be duplicated.",
+                    variant: "destructive",
+                });
+                setIsLoading(false);
+                return;
+            }
+
+            console.log(values);
+
             if (initialData) {
                 await axios.patch(
                     `/api/${params.storeId}/products/${params.productId}`,
@@ -314,36 +370,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                         />
                         <FormField
                             control={form.control}
-                            name="sizeId"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Size</FormLabel>
-                                    <Select
-                                        defaultValue={field.value || undefined}
-                                        onValueChange={field.onChange}
-                                    >
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select a size" />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            {sizes.map((size) => (
-                                                <SelectItem
-                                                    key={size.id}
-                                                    value={size.id}
-                                                >
-                                                    {size.name}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
                             name="colorId"
                             render={({ field }) => (
                                 <FormItem>
@@ -363,29 +389,20 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                                                     key={color.id}
                                                     value={color.id}
                                                 >
-                                                    {color.name}
+                                                    <div className="inline-flex items-center gap-2">
+                                                        <div
+                                                            className="p-3 rounded-full border"
+                                                            style={{
+                                                                backgroundColor:
+                                                                    color.value,
+                                                            }}
+                                                        />
+                                                        {color.name}
+                                                    </div>
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
                                     </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="stock"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Stock</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            type="number"
-                                            disabled={isLoading}
-                                            placeholder="Product stock"
-                                            {...field}
-                                        />
-                                    </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -432,6 +449,116 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                                 </FormItem>
                             )}
                         />
+                    </div>
+
+                    <div className="p-4 rounded-md bg-muted space-y-4">
+                        {formFieldArray.fields.map((field, index) => (
+                            <div
+                                className="grid grid-cols-3 gap-8"
+                                key={field.id}
+                            >
+                                <div className="cols-span-1">
+                                    <FormField
+                                        control={form.control}
+                                        name={`sizes.${index}.sizeId`}
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Size</FormLabel>
+                                                <Select
+                                                    defaultValue={
+                                                        field.value || undefined
+                                                    }
+                                                    onValueChange={
+                                                        field.onChange
+                                                    }
+                                                >
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select a size" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        {sizes
+                                                            // filter sizes that are already selected but not the current one
+                                                            .filter(
+                                                                (size) =>
+                                                                    !formFieldArray.fields
+                                                                        .map(
+                                                                            (
+                                                                                field
+                                                                            ) =>
+                                                                                field.sizeId
+                                                                        )
+                                                                        .includes(
+                                                                            size.id
+                                                                        ) ||
+                                                                    formFieldArray
+                                                                        .fields[
+                                                                        index
+                                                                    ].sizeId ===
+                                                                        size.id
+                                                            )
+                                                            .map((size) => (
+                                                                <SelectItem
+                                                                    key={
+                                                                        size.id
+                                                                    }
+                                                                    value={
+                                                                        size.id
+                                                                    }
+                                                                >
+                                                                    {size.name}
+                                                                </SelectItem>
+                                                            ))}
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                                <div className="col-span-1">
+                                    <FormField
+                                        control={form.control}
+                                        name={`sizes.${index}.stock`}
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Stock</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        type="number"
+                                                        disabled={isLoading}
+                                                        placeholder="Product stock"
+                                                        {...field}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                                {formFieldArray.fields.length > 1 && (
+                                    <div className="flex items-end justify-start">
+                                        <Button
+                                            size={"icon"}
+                                            variant={"destructive"}
+                                            onClick={() =>
+                                                formFieldArray.remove(index)
+                                            }
+                                        >
+                                            <Trash className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                        <Button
+                            onClick={() =>
+                                formFieldArray.append({ sizeId: "", stock: 1 })
+                            }
+                        >
+                            <Plus className="h-4 w-4 mr-2" /> Add size
+                        </Button>
                     </div>
                     <Button
                         type="submit"

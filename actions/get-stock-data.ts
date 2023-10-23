@@ -11,15 +11,23 @@ export const getTypesOfProducts = async (storeId: string) => {
 };
 
 export const getTotalPoductsInStock = async (storeId: string) => {
-    const totalProductsInStock = await prismadb.product.aggregate({
+    const products = await prismadb.product.findMany({
         where: {
             storeId,
             isArchived: false,
         },
-        _sum: {
-            stock: true,
+        include: {
+            sizes: true,
         },
     });
 
-    return totalProductsInStock._sum.stock;
+    const totalProductsInStock = products.reduce((total, product) => {
+        const productStockCount = product.sizes.reduce((sum, size) => {
+            return sum + size.stock;
+        }, 0);
+
+        return total + productStockCount;
+    }, 0);
+
+    return totalProductsInStock;
 };

@@ -51,14 +51,14 @@ model Category {
 }
 
 model Size {
-    id        String    @id @default(uuid())
+    id        String      @id @default(uuid())
     storeId   String
-    store     Store     @relation("StoreToSize", fields: [storeId], references: [id])
+    store     Store       @relation("StoreToSize", fields: [storeId], references: [id])
     name      String
     value     String
-    products  Product[] @relation("SizeToProduct")
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
+    sizetocks SizeStock[] @relation("SizeToSizeStock")
+    createdAt DateTime    @default(now())
+    updatedAt DateTime    @updatedAt
 
     @@index([storeId])
 }
@@ -86,19 +86,16 @@ model Product {
     price      Decimal
     isFeatured Boolean     @default(false)
     isArchived Boolean     @default(false)
-    sizeId     String
-    size       Size        @relation("SizeToProduct", fields: [sizeId], references: [id])
+    sizes      SizeStock[] @relation("ProductToSizeStock")
     colorId    String
     color      Color       @relation("ColorToProduct", fields: [colorId], references: [id])
     images     Image[]     @relation("ProductToImage")
     orders     OrderItem[] @relation("ProductToOrder")
-    stock      Int         @default(0)
     createdAt  DateTime    @default(now())
     updatedAt  DateTime    @updatedAt
 
     @@index([storeId])
     @@index([categoryId])
-    @@index([sizeId])
     @@index([colorId])
 }
 
@@ -140,4 +137,18 @@ model OrderItem {
 
     @@index([orderId])
     @@index([productId])
+}
+
+model SizeStock {
+    id        String   @id @default(uuid())
+    productId String
+    product   Product  @relation("ProductToSizeStock", fields: [productId], references: [id], onDelete: Cascade)
+    sizeId    String
+    size      Size     @relation("SizeToSizeStock", fields: [sizeId], references: [id])
+    stock     Int
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([productId])
+    @@index([sizeId])
 }

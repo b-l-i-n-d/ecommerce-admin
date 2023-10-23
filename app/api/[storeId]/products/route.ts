@@ -32,7 +32,11 @@ export async function GET(
             where: {
                 storeId: params.storeId,
                 categoryId,
-                sizeId,
+                sizes: {
+                    some: {
+                        sizeId: sizeId,
+                    },
+                },
                 colorId,
                 isFeatured: isFeatured ? true : undefined,
                 isArchived: false,
@@ -40,7 +44,7 @@ export async function GET(
             include: {
                 images: true,
                 category: true,
-                size: true,
+                sizes: true,
                 color: true,
             },
             orderBy: {
@@ -69,9 +73,8 @@ export async function POST(
             images,
             price,
             categoryId,
-            sizeId,
+            sizes,
             colorId,
-            stock,
             isFeatured,
             isArchived,
         } = body;
@@ -102,22 +105,31 @@ export async function POST(
             return new NextResponse("Category is required", { status: 400 });
         }
 
-        if (!sizeId) {
-            return new NextResponse("Size is required", { status: 400 });
+        if (!sizes || !sizes.length) {
+            return new NextResponse("Size/s is/are required", { status: 400 });
+        }
+
+        if (
+            !sizes.every(
+                (size: { sizeId: string; stock: number }) =>
+                    size.sizeId && size.stock
+            )
+        ) {
+            return new NextResponse("Size/s is/are required", { status: 400 });
+        }
+
+        if (
+            !sizes.every(
+                (size: { sizeId: string; stock: number }) => size.stock > 0
+            )
+        ) {
+            return new NextResponse("Stock must be greater than 0", {
+                status: 400,
+            });
         }
 
         if (!colorId) {
             return new NextResponse("Color is required", { status: 400 });
-        }
-
-        if (!stock) {
-            return new NextResponse("Stock is required", { status: 400 });
-        }
-
-        if (stock < 1) {
-            return new NextResponse("Stock must be greater than 1", {
-                status: 400,
-            });
         }
 
         if (!params.storeId) {
@@ -147,9 +159,17 @@ export async function POST(
                 },
                 price,
                 categoryId,
-                sizeId,
+                sizes: {
+                    createMany: {
+                        data: [
+                            ...sizes.map(
+                                (size: { sizeId: string; stock: number }) =>
+                                    size
+                            ),
+                        ],
+                    },
+                },
                 colorId,
-                stock,
                 isFeatured,
                 isArchived,
                 storeId: params.storeId,

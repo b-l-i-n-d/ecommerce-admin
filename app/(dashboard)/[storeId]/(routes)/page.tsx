@@ -210,8 +210,8 @@ const DashboardPage = async ({
                     </Card>
                 </div>
 
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                    <Card className="col-span-4">
+                <div className="grid gap-4 grid-cols-1 lg:grid-cols-7">
+                    <Card className="col-span-1 lg:col-span-4">
                         <CardHeader>
                             <CardTitle className="text-base">
                                 Overview
@@ -221,7 +221,7 @@ const DashboardPage = async ({
                             <Overview data={graphData} />
                         </CardContent>
                     </Card>
-                    <Card className="col-span-3 flex flex-col">
+                    <Card className="col-span-1 lg:col-span-3 flex flex-col">
                         <CardHeader>
                             <CardTitle className="text-base">
                                 Recent Sales
