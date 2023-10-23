@@ -1,5 +1,11 @@
-import { SignIn } from "@clerk/nextjs";
+import { Metadata } from "next";
+import { SignInWithTheme } from "./components/sign-in-with-theme";
+
+export const metadata: Metadata = {
+    title: "Ecommerce | Sign In",
+    description: "Sign in to your account.",
+};
 
 export default function Page() {
-    return <SignIn />;
+    return <SignInWithTheme />;
 }
