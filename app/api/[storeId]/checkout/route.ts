@@ -28,34 +28,58 @@ export async function POST(
         return new NextResponse("Product Ids are required", { status: 400 });
     }
 
-    const products = await prismadb.product.findMany({
-        where: {
-            id: {
-                in: items.map((item: any) => item.id),
+    const products = [];
+
+    for (const item of items) {
+        const product = await prismadb.product.findUnique({
+            where: {
+                id: item.id,
             },
-        },
-        include: {
-            images: true,
-        },
-    });
+            include: {
+                images: true,
+                sizes: {
+                    include: {
+                        size: true,
+                    },
+                },
+            },
+        });
+
+        if (!product) {
+            return new NextResponse(`Product ${item.id} not found`, {
+                status: 404,
+            });
+        }
+
+        products.push(product);
+    }
 
     const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
 
-    products.forEach((product) => {
-        const item = items.find((item: any) => item.id === product.id);
+    for (const item of items) {
+        const product = products.find((p) => p.id === item.id);
+
+        if (!product) {
+            return new NextResponse(`Product ${item.id} not found`, {
+                status: 404,
+            });
+        }
+
+        const size = product.sizes.find((s) => s.size.id === item.selectedSize);
 
         line_items.push({
             price_data: {
                 currency: "usd",
                 product_data: {
                     name: product.name,
-                    images: product.images.map((image) => image.url),
+                    images: product.images.map((i) => i.url),
+                    description: `Size: ${size?.size.name}`,
                 },
                 unit_amount: product.price.toNumber() * 100,
             },
             quantity: item.quantity,
         });
-    });
+    }
 
     const order = await prismadb.order.create({
         data: {
@@ -70,7 +94,7 @@ export async function POST(
                     },
                     size: {
                         connect: {
-                            id: item.sizeId,
+                            id: item.selectedSize,
                         },
                     },
                     quantity: item.quantity,

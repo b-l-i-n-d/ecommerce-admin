@@ -44,7 +44,11 @@ export async function GET(
             include: {
                 images: true,
                 category: true,
-                sizes: true,
+                sizes: {
+                    include: {
+                        size: true,
+                    },
+                },
                 color: true,
             },
             orderBy: {
