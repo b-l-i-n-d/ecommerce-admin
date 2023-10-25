@@ -52,36 +52,37 @@ export async function POST(req: Request) {
             include: {
                 orderItems: {
                     include: {
-                        product: true,
+                        product: {
+                            include: {
+                                sizes: true,
+                            },
+                        },
                         size: true,
                     },
                 },
             },
         });
 
-        await prismadb.$transaction([
-            ...order.orderItems.map((item) =>
-                prismadb.product.update({
+        // Update product stock
+        const orderItems = order.orderItems;
+
+        for (const orderItem of orderItems) {
+            const product = orderItem.product;
+            const size = orderItem.size;
+
+            const productSize = product.sizes.find((s) => s.sizeId === size.id);
+
+            if (productSize) {
+                await prismadb.sizeStock.update({
                     where: {
-                        id: item.product.id,
+                        id: productSize.id,
                     },
                     data: {
-                        sizes: {
-                            update: {
-                                where: {
-                                    id: item.size.id,
-                                },
-                                data: {
-                                    stock: {
-                                        decrement: item.quantity,
-                                    },
-                                },
-                            },
-                        },
+                        stock: productSize.stock - orderItem.quantity,
                     },
-                })
-            ),
-        ]);
+                });
+            }
+        }
     }
 
     return new NextResponse(null, { status: 200 });
