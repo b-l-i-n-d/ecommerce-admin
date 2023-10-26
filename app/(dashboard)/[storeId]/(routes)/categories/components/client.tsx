@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import { AlertCircle, Plus } from "lucide-react";
 import { useParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { DataTable } from "@/components/ui/data-table";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ApiList } from "@/components/ui/api-list";
 import Link from "next/link";
 import { CategoryColumn, columns } from "./columns";
@@ -33,6 +34,15 @@ export const CategoryClient: React.FC<CategoryClientProps> = ({ data }) => {
                     </Button>
                 </Link>
             </div>
+
+            <Alert>
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Add items orderly.</AlertTitle>
+                <AlertDescription>
+                    The items you add will be displayed in the order and store
+                    you add them.
+                </AlertDescription>
+            </Alert>
 
             <Separator />
 

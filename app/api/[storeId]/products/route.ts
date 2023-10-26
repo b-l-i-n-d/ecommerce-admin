@@ -42,7 +42,11 @@ export async function GET(
                 isArchived: false,
             },
             include: {
-                images: true,
+                images: {
+                    orderBy: {
+                        createdAt: "desc",
+                    },
+                },
                 category: true,
                 sizes: {
                     include: {
@@ -50,9 +54,6 @@ export async function GET(
                     },
                 },
                 color: true,
-            },
-            orderBy: {
-                createdAt: "desc",
             },
         });
 
