@@ -14,9 +14,9 @@
   <a href="#-features">✨ Features</a> •
   <a href="#-technologies">💻 Technologies</a> •
   <a href="#-project-structure">📁 Project structure</a> •
-  <a href="#-env-setup">⚙️ Environment variables</a> •
+  <a href="#%EF%B8%8F-environment-variables">⚙️ Environment variables</a> •
   <a href="#-how-to-run">🚀 How to run</a> •
-  <a href="#-api-endpoints">☁️ API endpoints</a> •
+  <a href="#%EF%B8%8F-api-endpoints">☁️ API endpoints</a> •
   <a href="#-license">📄 License</a>
 </p>
 
