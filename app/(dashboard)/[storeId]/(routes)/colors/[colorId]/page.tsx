@@ -7,7 +7,7 @@ export async function generateMetadata({
 }: {
     params: { colorId: string };
 }) {
-    if (params.colorId) {
+    if (params.colorId !== "new") {
         return {
             title: "Edit Color",
             description: "Edit a color for your store.",
